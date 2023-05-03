@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+{%block title%}Addresses{% endblock %}
+{%block content%}
+<div class="pb-6 grid grid-cols-1 gap-4 bg-gray-100 rounded-2xl">
+<div class="col-span-1">
+<form method="GET" action="{%url 'address:addresses'%}">
+    <input name="query" class="w-full py-4 px-6 borded-rounded-2xl bg-gray-100 hover:bg-gray-200" type="text" value="{{query}}" placeholder="Find somebody by first name/middle name/last name">
+    <button class="my-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl hover:bg-teal-600">Search</button>
+</form>
+    <hr class="mt-6">
+    <p class="font-semibold">Voivodeships</p>
+    <ul>
+        {%for voivodeship in voivodeships%}
+        <li class="mt-2 py-3 px-6 inline-block bg-blue-500 text-lg rounded-2xl text-white{% if voivodeship.id == voivodeship_id %} bg-green-500{% endif %}">
+        <a href="{% url 'address:addresses' %}?query={{ query }}&voivodeship={{ voivodeship.id }}">{{voivodeship.name}}</a>
+        </li>
+        {%endfor%}
+    </ul>
+    <hr class="mt-6">
+    <p class="font-semibold">Clear Filters</p>
+    <ul>
+        <li><a href="{% url 'address:addresses' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-2xl text-white ">CLEAR</a>
+    </ul>
+</div>
+<div class="col-span-3">
+    <div class="grid grid-cols-1 gap-3">
+        <div>
+            <table style="width: 100%;height: 15em;">
+            <tr class="pb-6 bg-white rounded-b-xl font-bold text-center"><th>First<br> name</th> <th>Middle<br> name</th> <th>Last <br>name </th><th>Voivodeship </th><th>Nationality</th><th> City</th><th> Street </th><th> House<br> number</th><th> Zip<br> code </th><th>E-mail</th><th> Phone <br>number</th></tr>
+    
+            {%for address in addresses%}
+        <div>
+                <div>
+                    <tr class="px-15 py-2 bg-white rounded-2xl hover:bg-teal-200 hover:font-bold text-center"><h3>
+                        <td><a href="{% url 'address:detail' address.id %}">{{address.first_name}}</td></a><td> {{address.middle_name}}   </td><td> {{address.last_name }}</td>
+                                    <td>{{address.voivodeship }}</td><td>  {{address.nationality }}  </td><td> {{address.city }}     </td>
+                                    <td> {{address.street }}    </td><td>  {{address.house_number }} </td><td>  {{address.zip_code }}</td>
+                                    <td> {{address.E_mail }}    </td><td>  {{address.Phone_number }} </td></h3></tr>
+                </div>
+            
+        </div>
+        {%endfor%}
+        </table>
+        </div>
+</div>
+</div>
+{%endblock%}
