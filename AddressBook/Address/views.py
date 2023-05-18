@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from .models import Address, Voivodeship
 from django.contrib.auth.decorators import login_required
 from .forms import NewAddressForm, EditAddressForm
-from itertools import chain
+from django.db.models import Q
 # Create your views here.
 def addresses(request):
     query=request.GET.get('query','')
@@ -12,10 +12,7 @@ def addresses(request):
     if voivodeship_id:
         addresses=addresses.filter(voivodeship_id=voivodeship_id)
     if query:
-        x=addresses.filter(first_name__icontains=query)
-        y=addresses.filter(middle_name__icontains=query)
-        z=addresses.filter(last_name__icontains=query)
-        addresses=list(chain(x,y,z))
+        addresses=Address.objects.filter(Q(first_name__icontains=query)|Q(middle_name__icontains=query)|Q(last_name__icontains=query))
     return render(request, 'address/addresses.html',{
         'addresses':addresses,
         'query':query,
