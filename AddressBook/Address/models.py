@@ -1,8 +1,32 @@
 from django.db import models
 from django.contrib.auth.models import User
+import requests
+from math import ceil
 # Create your models here.
 class Voivodeship(models.Model):
-    name = models.CharField(max_length=40)
+    def ApiVoivodeships():
+        start=0
+        baseurl = 'https://bdl.stat.gov.pl/api/v1/units?level=2&page=' + str(start)
+        print(baseurl)
+        r = requests.get(baseurl)
+        data = r.json()
+
+        TotalRecords = data['totalRecords']
+        PageSize = data['pageSize']
+        NumberOfPages=ceil(TotalRecords/PageSize)
+        Voivodeship=[]
+        while start!=NumberOfPages:
+            for x in data['results']:
+                Voivodeship.append(x['name'])
+            start+=1
+            baseurl = 'https://bdl.stat.gov.pl/api/v1/units?level=2&page=' + str(start)
+            r = requests.get(baseurl)
+            data = r.json()
+        Voivodeship.append("FOREIGNER/CUDZOZIEMIEC")
+        return Voivodeship
+    stackVoivo = ApiVoivodeships()
+    VOIVODESHIP_CHOICES = [(str(x), str(x)) for x in stackVoivo]
+    name = models.CharField(max_length=40, choices=VOIVODESHIP_CHOICES)
     class Meta:
         ordering = ('name',)
         verbose_name_plural = 'Voivodeships'
